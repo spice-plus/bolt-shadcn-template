@@ -5,9 +5,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { colors } from "@/design/tokens/colors";
+import { colors } from "@/tokens/colors";
 
-export default function Home() {
+export default function HomePage() {
   // カラースケールを表示するコンポーネント
   const ColorScale = ({
     title,

@@ -3,14 +3,14 @@
  */
 
 // アプリメタデータ
-export const APP_NAME = "Next.js Starter";
+export const APP_NAME = "Bolt Shadcn Template";
 export const APP_DESCRIPTION =
-  "A modern Next.js starter with TypeScript and shadcn/ui";
+  "A modern Vite + React starter with TypeScript and shadcn/ui";
 export const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  import.meta.env.VITE_APP_URL || "http://localhost:5173";
 
 // API設定
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
+export const API_BASE_URL = import.meta.env.VITE_API_URL || "/api";
 export const API_TIMEOUT = 30000; // 30 seconds
 
 // ストレージキー

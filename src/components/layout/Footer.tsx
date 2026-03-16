@@ -3,7 +3,7 @@ export function Footer() {
     <footer className="border-t">
       <div className="container flex h-16 items-center justify-center">
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Next.js Starter.
+          © {new Date().getFullYear()} Bolt Shadcn Template.
           すべての権利を保有します。
         </p>
       </div>
