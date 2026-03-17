@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { PageTitle } from "@/components/layout/PageTitle";
@@ -9,6 +9,9 @@ import { DataTable, type DataTableColumn } from "@/components/shared/DataTable";
 import { LoadingSpinner, TableSkeleton } from "@/components/shared/LoadingSpinner";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ActionMenu } from "@/components/shared/ActionMenu";
+import { SearchInput } from "@/components/shared/SearchInput";
+import { FilterSelect } from "@/components/shared/FilterSelect";
+import { FilterBar } from "@/components/shared/FilterBar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,6 +53,42 @@ export default function ComponentsPage() {
       ),
     },
   ];
+
+  // SearchInput / FilterSelect / FilterBar デモ用
+  type FilterUser = { id: number; name: string; role: string; status: "active" | "inactive" };
+  const filterUsers: FilterUser[] = [
+    { id: 1, name: "山田 太郎", role: "管理者", status: "active" },
+    { id: 2, name: "鈴木 花子", role: "編集者", status: "active" },
+    { id: 3, name: "田中 一郎", role: "閲覧者", status: "inactive" },
+    { id: 4, name: "佐藤 次郎", role: "管理者", status: "inactive" },
+    { id: 5, name: "伊藤 美咲", role: "編集者", status: "active" },
+  ];
+  const filterColumns: DataTableColumn<FilterUser>[] = [
+    { key: "id", header: "ID", align: "center" },
+    { key: "name", header: "名前" },
+    { key: "role", header: "役割" },
+    {
+      key: "status",
+      header: "ステータス",
+      align: "center",
+      render: (row) => (
+        <Badge variant={row.status === "active" ? "default" : "secondary"}>
+          {row.status === "active" ? "有効" : "無効"}
+        </Badge>
+      ),
+    },
+  ];
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const filteredUsers = useMemo(() => {
+    return filterUsers.filter((u) => {
+      const matchQuery = u.name.includes(searchQuery);
+      const matchRole = roleFilter === "" || u.role === roleFilter;
+      const matchStatus = statusFilter === "" || u.status === statusFilter;
+      return matchQuery && matchRole && matchStatus;
+    });
+  }, [searchQuery, roleFilter, statusFilter]);
 
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -143,6 +182,52 @@ export default function ComponentsPage() {
             emptyMessage="ユーザーが登録されていません"
             emptyDescription="右上のボタンから新しいユーザーを追加してください"
             emptyAction={{ label: "ユーザーを追加", onClick: () => {} }}
+          />
+        </CardContent>
+      </Card>
+
+      {/* SearchInput / FilterSelect / FilterBar */}
+      <Card>
+        <CardHeader>
+          <CardTitle>SearchInput / FilterSelect / FilterBar</CardTitle>
+          <CardDescription>
+            キーワード検索・絞り込みのパーツ。状態は親が持ち、フィルタリング済みデータを DataTable に渡す。
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <FilterBar>
+            <SearchInput
+              value={searchQuery}
+              onChange={setSearchQuery}
+              placeholder="名前で検索..."
+              className="w-56"
+            />
+            <FilterSelect
+              value={roleFilter}
+              onChange={setRoleFilter}
+              placeholder="役割"
+              options={[
+                { label: "管理者", value: "管理者" },
+                { label: "編集者", value: "編集者" },
+                { label: "閲覧者", value: "閲覧者" },
+              ]}
+            />
+            <FilterSelect
+              value={statusFilter}
+              onChange={setStatusFilter}
+              placeholder="ステータス"
+              options={[
+                { label: "有効", value: "active" },
+                { label: "無効", value: "inactive" },
+              ]}
+            />
+          </FilterBar>
+          <DataTable
+            columns={filterColumns}
+            data={filteredUsers}
+            keyField="id"
+            emptyMessage="条件に一致するユーザーが見つかりません"
+            emptyDescription="検索条件を変更して再度お試しください"
           />
         </CardContent>
       </Card>
