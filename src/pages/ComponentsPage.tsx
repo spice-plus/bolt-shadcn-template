@@ -1,10 +1,14 @@
 import { useState } from "react";
+import { Pencil, Trash2 } from "lucide-react";
 import { Breadcrumb } from "@/components/layout/Breadcrumb";
 import { PageTitle } from "@/components/layout/PageTitle";
 import { ConfirmDialog } from "@/components/shared/ConfirmDialog";
 import { DeleteConfirmDialog } from "@/components/shared/DeleteConfirmDialog";
 import { FormField } from "@/components/shared/FormField";
 import { DataTable, type DataTableColumn } from "@/components/shared/DataTable";
+import { LoadingSpinner, TableSkeleton } from "@/components/shared/LoadingSpinner";
+import { EmptyState } from "@/components/shared/EmptyState";
+import { ActionMenu } from "@/components/shared/ActionMenu";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -138,6 +142,63 @@ export default function ComponentsPage() {
             keyField="id"
             emptyMessage="ユーザーが登録されていません"
           />
+        </CardContent>
+      </Card>
+
+      {/* LoadingSpinner / TableSkeleton */}
+      <Card>
+        <CardHeader>
+          <CardTitle>LoadingSpinner / TableSkeleton</CardTitle>
+          <CardDescription>
+            ローディング中に使うスピナーとテーブル用スケルトン。size で大きさを変更可能。
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex items-center gap-6">
+            <LoadingSpinner size="sm" />
+            <LoadingSpinner size="md" />
+            <LoadingSpinner size="lg" />
+          </div>
+          <TableSkeleton rows={3} cols={4} />
+        </CardContent>
+      </Card>
+
+      {/* EmptyState */}
+      <Card>
+        <CardHeader>
+          <CardTitle>EmptyState</CardTitle>
+          <CardDescription>
+            データが空のときのプレースホルダー。action を渡すと CTA ボタンを表示。
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <EmptyState
+            title="データが見つかりません"
+            description="条件を変えて再検索してください"
+            action={{ label: "新規追加", onClick: () => {} }}
+          />
+          <EmptyState title="通知はありません" />
+        </CardContent>
+      </Card>
+
+      {/* ActionMenu */}
+      <Card>
+        <CardHeader>
+          <CardTitle>ActionMenu</CardTitle>
+          <CardDescription>
+            縦三点リーダー（⋮）のドロップダウンメニュー。DataTable の行アクションに埋め込んで使う。
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-4">
+            <span className="text-muted-foreground">行アクション例:</span>
+            <ActionMenu
+              items={[
+                { label: "編集", icon: <Pencil className="h-4 w-4" />, onClick: () => {} },
+                { label: "削除", icon: <Trash2 className="h-4 w-4" />, onClick: () => {}, variant: "destructive" },
+              ]}
+            />
+          </div>
         </CardContent>
       </Card>
 
