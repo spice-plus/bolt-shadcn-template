@@ -1,4 +1,3 @@
-"use client";
 
 // react-hot-toastライブラリにインスパイアされています
 import * as React from "react";
