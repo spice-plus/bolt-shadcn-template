@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [react()],
   cacheDir: ".vite",
   server: {
+    host: true,
     port: 3000,
   },
   resolve: {
