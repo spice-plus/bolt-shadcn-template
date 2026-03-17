@@ -3,9 +3,6 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "ホーム", href: "/" },
-  { label: "メニュー1", href: "/menu1" },
-  { label: "メニュー2", href: "/menu2" },
-  { label: "コンポーネント", href: "/components" },
 ];
 
 export function Sidebar() {
