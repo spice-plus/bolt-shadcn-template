@@ -7,14 +7,17 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
-  cacheDir: ".vite",
   server: {
     host: true,
     port: 3000,
   },
   resolve: {
     alias: {
+      "@/types": path.resolve(__dirname, "./types"),
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  optimizeDeps: {
+    exclude: ["lucide-react"],
   },
 });

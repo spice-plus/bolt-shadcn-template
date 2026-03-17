@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "ホーム", href: "/" },
+  { label: "コンポーネント", href: "/components" },
 ];
 
 export function Sidebar() {

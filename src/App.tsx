@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { Sidebar } from "@/components/layout/Sidebar";
 import HomePage from "@/pages/HomePage";
+import ComponentsPage from "@/pages/ComponentsPage";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <main className="flex-1">
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/components" element={<ComponentsPage />} />
           </Routes>
         </main>
       </div>
