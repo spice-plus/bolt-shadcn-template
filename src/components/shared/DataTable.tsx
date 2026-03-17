@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { EmptyState } from "@/components/shared/EmptyState";
 
 export type DataTableColumn<T> = {
   /** データオブジェクトのキー、またはカスタム識別子 */
@@ -23,8 +24,12 @@ type DataTableProps<T> = {
   data: T[];
   /** 各行の一意キー（row[keyField] が React key になる） */
   keyField: keyof T;
-  /** データが空のときに表示するメッセージ */
+  /** データが空のときのタイトル */
   emptyMessage?: string;
+  /** データが空のときの説明文 */
+  emptyDescription?: string;
+  /** データが空のときの CTA ボタン */
+  emptyAction?: { label: string; onClick: () => void };
 };
 
 const alignClass = {
@@ -38,6 +43,8 @@ export function DataTable<T>({
   data,
   keyField,
   emptyMessage = "データがありません",
+  emptyDescription,
+  emptyAction,
 }: DataTableProps<T>) {
   return (
     <Table>
@@ -56,11 +63,12 @@ export function DataTable<T>({
       <TableBody>
         {data.length === 0 ? (
           <TableRow>
-            <TableCell
-              colSpan={columns.length}
-              className="text-center text-muted-foreground"
-            >
-              {emptyMessage}
+            <TableCell colSpan={columns.length} className="p-0">
+              <EmptyState
+                title={emptyMessage}
+                description={emptyDescription}
+                action={emptyAction}
+              />
             </TableCell>
           </TableRow>
         ) : (

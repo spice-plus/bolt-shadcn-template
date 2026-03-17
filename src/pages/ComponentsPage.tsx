@@ -141,6 +141,8 @@ export default function ComponentsPage() {
             data={[]}
             keyField="id"
             emptyMessage="ユーザーが登録されていません"
+            emptyDescription="右上のボタンから新しいユーザーを追加してください"
+            emptyAction={{ label: "ユーザーを追加", onClick: () => {} }}
           />
         </CardContent>
       </Card>
