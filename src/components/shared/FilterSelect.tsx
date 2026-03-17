@@ -7,6 +7,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
+const ALL = "__all__";
+
 type FilterOption = {
   label: string;
   value: string;
@@ -28,12 +30,15 @@ export function FilterSelect({
   className,
 }: FilterSelectProps) {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select
+      value={value === "" ? ALL : value}
+      onValueChange={(v) => onChange(v === ALL ? "" : v)}
+    >
       <SelectTrigger className={cn("w-36", className)}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">すべて</SelectItem>
+        <SelectItem value={ALL}>すべて</SelectItem>
         {options.map((opt) => (
           <SelectItem key={opt.value} value={opt.value}>
             {opt.label}
