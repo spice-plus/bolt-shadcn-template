@@ -5,294 +5,141 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { colors } from "@/tokens/colors";
+import { PageTitle } from "@/components/layout/PageTitle";
+import { brand, semantic, neutral } from "@/tokens/colors";
 
 export default function HomePage() {
-  // カラースケールを表示するコンポーネント
-  const ColorScale = ({
-    title,
-    colorScale,
-  }: {
-    title: string;
-    colorScale: Record<number, string>;
-  }) => (
-    <div className="mb-8">
-      <h3 className="text-lg font-semibold mb-4">{title}</h3>
-      <div className="grid grid-cols-5 md:grid-cols-10 gap-2">
-        {Object.entries(colorScale).map(([scale, color]) => (
-          <div key={scale} className="text-center">
-            <div
-              className="w-full h-12 md:h-16 rounded-md shadow-sm border border-gray-200"
-              style={{ backgroundColor: color }}
-            />
-            <p className="text-xs mt-1">{scale}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // 状態カラーを表示するコンポーネント
-  const StateColors = ({
-    title,
-    stateColor,
-  }: {
-    title: string;
-    stateColor: Record<string, string>;
-  }) => (
-    <div className="mb-6">
-      <h4 className="text-md font-medium mb-3">{title}</h4>
-      <div className="grid grid-cols-5 gap-2">
-        {Object.entries(stateColor).map(([state, color]) => (
-          <div key={state} className="text-center">
-            <div
-              className="w-full h-12 rounded-md shadow-sm border border-gray-200"
-              style={{ backgroundColor: color }}
-            />
-            <p className="text-xs mt-1">{state}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  // 単色を表示するコンポーネント
-  const SingleColor = ({
-    title,
+  const ColorSwatch = ({
+    label,
     color,
-    textColor = "#000000",
   }: {
-    title: string;
+    label: string;
     color: string;
-    textColor?: string;
   }) => (
     <div className="text-center">
       <div
-        className="w-full h-12 rounded-md shadow-sm border border-gray-200 flex items-center justify-center"
+        className="w-full h-12 rounded-md shadow-sm border border-border"
         style={{ backgroundColor: color }}
-      >
-        {title === "反転" && (
-          <span style={{ color: textColor }} className="text-sm">
-            Aa
-          </span>
-        )}
+      />
+      <p className="text-xs mt-1 font-medium">{label}</p>
+      <p className="text-xs text-muted-foreground">{color}</p>
+    </div>
+  );
+
+  const ColorGroup = ({
+    title,
+    colors,
+  }: {
+    title: string;
+    colors: Record<string, string>;
+  }) => (
+    <div className="mb-6">
+      <h4 className="text-sm font-semibold mb-3 text-muted-foreground">{title}</h4>
+      <div className="grid grid-cols-3 gap-3">
+        {Object.entries(colors).map(([key, value]) => (
+          <ColorSwatch key={key} label={key} color={value} />
+        ))}
       </div>
-      <p className="text-xs mt-1">{title}</p>
-      <p className="text-xs text-gray-500">{color}</p>
     </div>
   );
 
   return (
     <div className="container py-8">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="text-3xl font-bold text-center mb-2">カラーシステム</h1>
-        <p className="text-center text-muted-foreground mb-8">
-          デザインシステムで定義された100〜900のスケールを持つカラーパレット
-        </p>
+      <div className="mx-auto max-w-4xl">
+        <div className="text-center mb-8">
+          <PageTitle title="カラーシステム" />
+          <p className="text-muted-foreground mt-2">
+            <code className="bg-muted px-2 py-1 rounded font-mono">src/tokens/colors.ts</code>{" "}
+            の hex 値を変更するだけでテーマが更新されます
+          </p>
+        </div>
 
         {/* ブランドカラー */}
-        <Card className="mb-8">
+        <Card className="mb-6">
           <CardHeader>
             <CardTitle>ブランドカラー</CardTitle>
             <CardDescription>
-              プロジェクトの主要なブランドカラー
+              brand.primary.base を変更すると shadcn コンポーネントの primary カラーも変わります
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ColorScale
-              title="プライマリー (#2E3A97)"
-              colorScale={colors.brand.primary}
-            />
-            <ColorScale
-              title="セカンダリー (#475569)"
-              colorScale={colors.brand.secondary}
-            />
-            <ColorScale
-              title="ターシャリー (#059669)"
-              colorScale={colors.brand.tertiary}
-            />
+            <ColorGroup title="Primary" colors={brand.primary} />
+            <ColorGroup title="Secondary" colors={brand.secondary} />
+            <ColorGroup title="Tertiary" colors={brand.tertiary} />
           </CardContent>
         </Card>
 
         {/* セマンティックカラー */}
-        <Card className="mb-8">
+        <Card className="mb-6">
           <CardHeader>
             <CardTitle>セマンティックカラー</CardTitle>
-            <CardDescription>
-              状態を表すカラー（base, hover, active, light, dark）
-            </CardDescription>
+            <CardDescription>状態を表すカラー（light / base / dark）</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid md:grid-cols-2 gap-6">
-              <StateColors
-                title="成功 (Success) - #10B981"
-                stateColor={colors.semantic.success}
-              />
-              <StateColors
-                title="警告 (Warning) - #F59E0B"
-                stateColor={colors.semantic.warning}
-              />
-              <StateColors
-                title="エラー (Error) - #EF4444"
-                stateColor={colors.semantic.error}
-              />
-              <StateColors
-                title="情報 (Info) - #3B82F6"
-                stateColor={colors.semantic.info}
-              />
-              <StateColors
-                title="無効 (Disabled) - #9CA3AF"
-                stateColor={colors.semantic.disabled}
-              />
+              <ColorGroup title="Destructive" colors={semantic.destructive} />
+              <ColorGroup title="Success" colors={semantic.success} />
+              <ColorGroup title="Warning" colors={semantic.warning} />
+              <ColorGroup title="Info" colors={semantic.info} />
             </div>
           </CardContent>
         </Card>
 
-        {/* テキスト・背景カラー */}
-        <div className="grid md:grid-cols-2 gap-8 mb-8">
-          <Card>
-            <CardHeader>
-              <CardTitle>テキストカラー</CardTitle>
-              <CardDescription>テキスト表示用のカラー定義</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-4 gap-2 mb-4">
-                <SingleColor title="主要" color={colors.text.primary} />
-                <SingleColor title="副次" color={colors.text.secondary} />
-                <SingleColor title="無効" color={colors.text.disabled} />
-                <SingleColor
-                  title="反転"
-                  color="#1F2937"
-                  textColor={colors.text.inverse}
-                />
-              </div>
-              <ColorScale
-                title="テキストスケール"
-                colorScale={colors.text.scale}
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>背景カラー</CardTitle>
-              <CardDescription>背景用のカラー定義</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                <SingleColor title="主要" color={colors.background.primary} />
-                <SingleColor title="副次" color={colors.background.secondary} />
-                <SingleColor
-                  title="ターシャリー"
-                  color={colors.background.tertiary}
-                />
-              </div>
-              <ColorScale
-                title="背景スケール"
-                colorScale={colors.background.scale}
-              />
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* 中性色 */}
-        <Card className="mb-8">
+        {/* ニュートラルカラー */}
+        <Card className="mb-6">
           <CardHeader>
-            <CardTitle>中性色（グレースケール）</CardTitle>
-            <CardDescription>UIコンポーネント用の中性色</CardDescription>
+            <CardTitle>ニュートラルカラー</CardTitle>
           </CardHeader>
           <CardContent>
-            <ColorScale title="グレー" colorScale={colors.neutral.gray} />
+            <div className="grid grid-cols-4 md:grid-cols-6 gap-3">
+              {Object.entries(neutral).map(([key, value]) => (
+                <ColorSwatch key={key} label={key} color={value} />
+              ))}
+            </div>
           </CardContent>
         </Card>
 
-        {/* 使用例 */}
+        {/* 実際の使用例 */}
         <Card>
           <CardHeader>
             <CardTitle>使用例</CardTitle>
-            <CardDescription>カラーシステムの実際の使用例</CardDescription>
+            <CardDescription>CSS 変数から導出された shadcn コンポーネント</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div
               className="p-4 rounded-lg"
-              style={{ backgroundColor: colors.brand.primary[500] }}
+              style={{ backgroundColor: brand.primary.base }}
             >
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: colors.text.inverse }}
-              >
-                プライマリーカラーの使用例
-              </h3>
-              <p style={{ color: colors.text.inverse }}>
-                これはプライマリーカラーを背景に使用した例です。
+              <p className="font-semibold" style={{ color: neutral.white }}>
+                brand.primary.base — CSS 変数 --primary に反映
               </p>
             </div>
 
             <div
               className="p-4 rounded-lg border-2"
               style={{
-                backgroundColor: colors.semantic.success.light,
-                borderColor: colors.semantic.success.base,
+                backgroundColor: semantic.success.light,
+                borderColor: semantic.success.base,
               }}
             >
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: colors.semantic.success.dark }}
-              >
-                成功メッセージの例
-              </h3>
-              <p style={{ color: colors.text.primary }}>
-                操作が正常に完了しました。
-              </p>
-            </div>
-
-            <div
-              className="p-4 rounded-lg border"
-              style={{
-                backgroundColor: colors.background.secondary,
-                borderColor: colors.neutral.gray[300],
-              }}
-            >
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: colors.text.primary }}
-              >
-                カードコンポーネントの例
-              </h3>
-              <p style={{ color: colors.text.secondary }}>
-                これは背景色とテキストカラーを組み合わせた例です。
+              <p className="font-semibold" style={{ color: semantic.success.dark }}>
+                semantic.success — 成功メッセージの例
               </p>
             </div>
 
             <div
               className="p-4 rounded-lg border-2"
               style={{
-                backgroundColor: colors.semantic.error.light,
-                borderColor: colors.semantic.error.base,
+                backgroundColor: semantic.destructive.light,
+                borderColor: semantic.destructive.base,
               }}
             >
-              <h3
-                className="text-lg font-semibold"
-                style={{ color: colors.semantic.error.dark }}
-              >
-                エラーメッセージの例
-              </h3>
-              <p style={{ color: colors.text.primary }}>
-                エラーが発生しました。もう一度お試しください。
+              <p className="font-semibold" style={{ color: semantic.destructive.dark }}>
+                semantic.destructive — エラーメッセージの例
               </p>
             </div>
           </CardContent>
         </Card>
-
-        <div className="mt-8 text-center text-muted-foreground">
-          <p>
-            詳しい使用方法は{" "}
-            <code className="text-sm bg-gray-100 px-2 py-1 rounded">
-              src/design/tokens/colors-usage.md
-            </code>{" "}
-            を参照してください。
-          </p>
-        </div>
       </div>
     </div>
   );

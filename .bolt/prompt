@@ -1,11 +1,90 @@
 For all designs I ask you to make, have them be beautiful, not cookie cutter. Make webpages that are fully featured and worthy for production.
 
-When using client-side hooks (useState and useEffect) in a component that's being treated as a Server Component by Next.js, always add the "use client" directive at the top of the file.
-
-Do not write code that will trigger this error: "Warning: Extra attributes from the server: %s%s""class,style"
-
 By default, this template supports JSX syntax with Tailwind CSS classes, the shadcn/ui library, React hooks, and Lucide React for icons. Do not install other packages for UI themes, icons, etc unless absolutely necessary or I request them.
 
-Use icons from lucide-react for logos.
+Use icons from lucide-react for icons and logos.
 
 Use stock photos from unsplash where appropriate, only valid URLs you know exist.
+
+---
+
+# 技術スタック
+
+- Vite 6 + React 19 SPA（SSR なし。Next.js ではない）
+- TypeScript
+- Tailwind CSS v3
+- shadcn/ui（src/components/ui/ に配置済み）
+- react-router-dom v6（ルーティング）
+- Lucide React（アイコン）
+
+# ルーティング
+
+- ナビゲーションには必ず `<Link to="...">` を使う（`<a href>` ではない）
+- プログラム遷移は `useNavigate()`
+- ページコンポーネントは `src/pages/` に配置する
+
+# デザインシステム
+
+## カラー変更方法
+`src/tokens/colors.ts` の hex 値を編集するだけでテーマ全体が変わる。
+`brand.primary.base` を変えれば `--primary` CSS 変数が自動更新される。
+CSS 変数は `src/tokens/theme.ts` で定義され、`main.tsx` の `injectTheme()` が `:root` にセットする。
+
+## Tailwind でのカラー使用
+`bg-primary` / `text-primary` / `border-primary` 等の Tailwind クラスを使う。
+CSS 変数を直接 `style={{ color: "var(--primary)" }}` で書かない。
+
+## 既存のレイアウトコンポーネント
+`src/components/layout/` に以下がある。新規作成せず再利用すること。
+
+| コンポーネント | 用途 |
+|---|---|
+| `Header.tsx` | サイトヘッダー |
+| `Footer.tsx` | サイトフッター |
+| `Sidebar.tsx` | サイドナビゲーション（`useLocation` でアクティブ判定） |
+| `Breadcrumb.tsx` | パンくずナビ（`items: { label, href? }[]` props） |
+| `PageTitle.tsx` | ページタイトル（`title: string` props） |
+
+# コンポーネント設計ルール
+
+## 配置ルール
+- 複数ページで使う汎用パーツ → `src/components/shared/` に作成してから各ページで利用する
+- 1つのページ内だけで使うパーツ → そのページと同階層の `_components/` に作成する
+  例: `src/pages/settings/_components/SettingsForm.tsx`
+- レイアウト要素 → `src/components/layout/` の既存コンポーネントを再利用する
+
+## shadcn/ui プリミティブと shared/ の使い分け
+`Button`, `Dialog`, `Input` 等の shadcn/ui プリミティブは `src/components/ui/` から**そのまま直接使う**。
+ボタンカラー等はすでに CSS 変数（`--primary`, `--destructive` 等）でテーマ制御されているため、shared/ への wrapping は不要。
+
+`src/components/shared/` に作るのは以下のケースのみ：
+- 複数の shadcn コンポーネントを組み合わせた繰り返しパターン（例: `ConfirmDialog` = Dialog + キャンセル + 実行ボタン）
+- プロジェクト固有のロジックや固定 props を持つもの（例: `DeleteConfirmDialog`）
+- 複数ページで使うフォーム部品（例: `FormField` = Label + Input + エラー表示）
+
+## バリアント
+- コンポーネントの見た目の違いは props の `variant` で表現する
+- `cva`（class-variance-authority）を使ってバリアントを定義する
+- ページ側でインラインスタイルやクラスで見た目を上書きしない
+
+## スタイリング禁止事項（ページコンポーネントでの直接指定禁止）
+以下のクラスをページコンポーネント（`src/pages/`）で直接使ってはいけない。
+必ずコンポーネント化して、そのコンポーネント内にスタイルを閉じ込めること。
+
+- **テキストサイズ**: `text-xs`, `text-sm`, `text-base`, `text-lg`, `text-xl`, `text-2xl` 等
+- **カラー直接指定**: `text-red-500`, `bg-blue-600`, `border-gray-300` 等のカラースケール直指定
+- **スペーシング直接指定**: `p-4`, `mt-8`, `gap-3` 等（レイアウト上の `space-y-*` / `flex` / `grid` は許可）
+
+# shadcn/ui の使い方
+
+- `src/components/ui/` のコンポーネントを優先して使う
+- 新たに shadcn コンポーネントを追加する場合は `npx shadcn add <name>`
+- `src/components/ui/` 配下のファイルは直接編集しない
+
+# やってはいけないこと
+
+- `"use client"` / `"use server"` ディレクティブを書かない（Vite SPA のため不要）
+- `next/link`, `next/navigation`, `next/image` 等 Next.js の import を使わない
+- 新しい UI ライブラリをインストールしない
+- `src/components/ui/` 配下のファイルを直接編集しない
+- ページコンポーネントにテキストサイズ・カラー・スペーシングを直接書かない（上記参照）
